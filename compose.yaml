@@ -1,0 +1,35 @@
+services:
+  code-server:
+    image: linuxserver/code-server:latest
+    container_name: code-server
+    privileged: true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Tokyo
+      - PASSWORD=codeserver
+      - SUDO_PASSWORD=codeserver
+      - DOCKER_MODS=linuxserver/mods:universal-docker-in-docker|linuxserver/mods:code-server-ssl
+      - SSL_CERT_PATH=/certs/cert.crt
+      - SSL_KEY_PATH=/certs/cert.key
+    volumes:
+      - ./config:/config # container user home directory
+      - ./workspace:/config/workspace
+      - ./certs:/certs # code-server tls certs
+      - ~/.ssh:/config/.ssh
+      - ~/.gitconfig:/config/.gitconfig
+    ports:
+      - 8443:8443
+    restart: unless-stopped
+  ollama:
+    image: ollama/ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama:/root/.ollama
+    restart: always
