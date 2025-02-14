@@ -22,7 +22,7 @@ services:
       - 8443:8443
     restart: unless-stopped
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:latest
     deploy:
       resources:
         reservations:
